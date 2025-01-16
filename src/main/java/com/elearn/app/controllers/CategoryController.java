@@ -4,6 +4,7 @@ import com.elearn.app.Config.AppConstants;
 import com.elearn.app.dtos.CategoryDto;
 import com.elearn.app.dtos.CustomPageResponse;
 import com.elearn.app.services.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto){
+    ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto){
         return new  ResponseEntity<>(this.categoryService.createCategory(categoryDto),HttpStatus.CREATED);
     }
     @GetMapping("/category/{categoryId}")
@@ -58,7 +59,7 @@ public class CategoryController {
     }
 
     @PatchMapping("/category/update/{categoryId}")
-    ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto,@PathVariable String categoryId){
+    ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto,@PathVariable String categoryId){
         return new ResponseEntity<>(this.categoryService.updateCategory(categoryDto,categoryId),HttpStatus.OK);
     }
 
