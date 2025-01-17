@@ -1,7 +1,9 @@
 package com.elearn.app.services;
 
 import com.elearn.app.dtos.CategoryDto;
+import com.elearn.app.dtos.CourseDto;
 import com.elearn.app.dtos.CustomPageResponse;
+import com.elearn.app.entities.Course;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,4 +20,7 @@ public interface CategoryService {
 
     CategoryDto updateCategory(CategoryDto categoryDto,String categoryId);
 
+    void addCourseToCategory(String courseId, String categoryId);
+
+    List<CourseDto> getCoursesFromCategory(String categoryId);
 }

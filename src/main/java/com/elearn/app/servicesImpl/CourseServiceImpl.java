@@ -1,12 +1,17 @@
 package com.elearn.app.servicesImpl;
 
+import com.elearn.app.dtos.CategoryDto;
 import com.elearn.app.dtos.CourseDto;
+import com.elearn.app.dtos.CustomMessage;
+import com.elearn.app.dtos.CustomPageResponse;
+import com.elearn.app.entities.Category;
 import com.elearn.app.entities.Course;
 import com.elearn.app.exceptions.ResourceNotFoundException;
 import com.elearn.app.repositories.CourseRepo;
 import com.elearn.app.services.CourseService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -37,10 +42,28 @@ public class CourseServiceImpl implements CourseService {
    }
 
     @Override
-    public List<CourseDto> getAllCourses() {
+    public CustomPageResponse<CourseDto> getAllCourses(int pageNumber, int pageSize, String sortBy) {
+        CustomPageResponse<CourseDto> customPageResponse=new CustomPageResponse();
+        Sort sort=Sort.by(sortBy);
+        PageRequest pageRequest=PageRequest.of(pageNumber,pageSize,sort);
+        Page<Course> coursePage=courseRepo.findAll(pageRequest);
         List<Course> courses=courseRepo.findAll();
         List<CourseDto> courseDto=courses.stream().map(x->modelMapper.map(x,CourseDto.class)).collect(Collectors.toList());
-        return courseDto;
+        customPageResponse.setContent(courseDto);
+        customPageResponse.setLast(coursePage.isLast());
+        customPageResponse.setTotalElements(coursePage.getTotalElements());
+        customPageResponse.setTotalPages(coursePage.getTotalPages());
+        customPageResponse.setPageSize(coursePage.getSize());
+        customPageResponse.setPageNumber(pageNumber);
+        return customPageResponse;
+    }
+
+    @Override
+    public Page<CourseDto> getAllCourses(Pageable pageable) {
+        Page<Course> courses=courseRepo.findAll(pageable);
+        List<CourseDto> courseDtos=courses.getContent().stream().map(course -> modelMapper.map(course,CourseDto.class)).collect(Collectors.toList());
+        return new PageImpl<>(courseDtos,pageable,courses.getTotalElements());
+
     }
 
     @Override
@@ -55,6 +78,8 @@ public class CourseServiceImpl implements CourseService {
         course.setTitle(dto.getTitle());
         course.setLongDesc(dto.getLongDesc());
         course.setShortDesc(dto.getShortDesc());
+//        modelMapper.map(dto,course);
+        courseRepo.save(course);
         CourseDto courseDto=modelMapper.map(course,CourseDto.class);
         return courseDto;
     }
@@ -73,9 +98,26 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseDto> searchByTitle(String searchTitleKeyword) {
-        Optional<Course> course=courseRepo.findByTitle(searchTitleKeyword);
+    public List<CourseDto> searchCourses(String keyword) {
+        List<Course> course=courseRepo.findByTitleContainingIgnoreCaseOrShortDescContainingIgnoreCase(keyword,keyword);
         return course.stream().map(cs->modelMapper.map(cs,CourseDto.class)).collect(Collectors.toList());
 
+    }
+
+    @Override
+    public CourseDto updateCourseDetails(CourseDto courseDto, String courseId) {
+        Course course=courseRepo.findById(courseId).orElseThrow(()->new ResourceNotFoundException("Course not found !!"));
+        course.setCourseId(courseId);
+        course.setShortDesc(courseDto.getShortDesc());
+        course.setLongDesc(courseDto.getLongDesc());
+        course.setPrice(courseDto.getPrice());
+        course.setLive(courseDto.isLive());
+        course.setDiscount(courseDto.getDiscount());
+        course.setTitle(courseDto.getTitle());
+        course.setCategoryList(courseDto.getCategoryList());
+        course.setBanner(courseDto.getBanner());
+        course.setCreatedDate(new Date());
+        Course updatedCourse=courseRepo.save(course);
+        return modelMapper.map(updatedCourse,CourseDto.class);
     }
 }

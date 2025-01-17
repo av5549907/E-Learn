@@ -25,6 +25,16 @@ public class Course {
     private Date createdDate;
     @OneToMany(mappedBy = "course")
     private List<Video> videoList=new ArrayList<>();
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private  List<Category> categoryList=new ArrayList<>();
+
+    public  void  addCategory(Category category){
+        categoryList.add(category);
+        category.getCourses().add(this);
+    }
+
+    public  void removeCategory(Category category){
+        categoryList.remove(category);
+        category.getCourses().remove(this);
+    }
 }

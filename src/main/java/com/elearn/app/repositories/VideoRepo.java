@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface VideoRepo extends JpaRepository<Video,String> {
-    Optional<Video> findByVideoTitle(String title);
-//    List<Video> findByCourse(Course course);
+
+   List<Video> findByVideoId(String Id);
+   List<Video> findByVideoTitleContainingIgnoreCaseOrVideoDescContainingIgnoreCase(String keyword,String keyword1);
 }

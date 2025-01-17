@@ -20,5 +20,5 @@ public class CategoryDto {
     @NotEmpty(message = "description is required")
     private  String desc;
     private Date addedDate;
-//    List<Course> courses=new ArrayList<>();
+    List<Course> courses=new ArrayList<>();
 }

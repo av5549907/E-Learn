@@ -2,6 +2,8 @@ package com.elearn.app.controllers;
 
 import com.elearn.app.Config.AppConstants;
 import com.elearn.app.dtos.CategoryDto;
+import com.elearn.app.dtos.CourseDto;
+import com.elearn.app.dtos.CustomMessage;
 import com.elearn.app.dtos.CustomPageResponse;
 import com.elearn.app.services.CategoryService;
 import jakarta.validation.Valid;
@@ -26,17 +28,17 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.startCategory(), HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto){
         return new  ResponseEntity<>(this.categoryService.createCategory(categoryDto),HttpStatus.CREATED);
     }
-    @GetMapping("/category/{categoryId}")
+    @GetMapping("/{categoryId}")
     CategoryDto getCategory(@PathVariable String categoryId){
 
         return  this.categoryService.getCategory(categoryId);
     }
 
-    @GetMapping("/")
+    @GetMapping
     ResponseEntity<CustomPageResponse<CategoryDto>> getAll(
             @RequestParam(value="pageNumber",required = false,defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int pageNumber,
             @RequestParam(value="pageSize",required = false,defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize,
@@ -47,20 +49,38 @@ public class CategoryController {
         return new  ResponseEntity<>(this.categoryService.getAll(pageNumber,pageSize,sortBy,sortDirection),HttpStatus.OK);
     }
 
-    @DeleteMapping("/category/delete/{categoryId}")
+    @DeleteMapping("/{categoryId}")
     ResponseEntity<String>  deleteCategory(@PathVariable String categoryId){
 
         return new ResponseEntity<>(this.categoryService.deleteCategory(categoryId),HttpStatus.OK);
     }
 
-    @GetMapping("/category/title/{titleKeyword}")
+    @GetMapping("/title/{titleKeyword}")
     ResponseEntity<List<CategoryDto>> findByTitle(@PathVariable String titleKeyword){
        return  new ResponseEntity<>(this.categoryService.findByTitle(titleKeyword),HttpStatus.OK);
     }
 
-    @PatchMapping("/category/update/{categoryId}")
+    @PatchMapping("/{categoryId}")
     ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto,@PathVariable String categoryId){
         return new ResponseEntity<>(this.categoryService.updateCategory(categoryDto,categoryId),HttpStatus.OK);
     }
+
+    @PostMapping("/category/{categoryId}/course/{courseId}")
+    ResponseEntity<CustomMessage> addCourseToCategory(@PathVariable String courseId,@PathVariable String categoryId){
+        categoryService.addCourseToCategory(courseId,categoryId);
+        CustomMessage customMessage=new CustomMessage();
+        customMessage.setMessage("Category Updated !!");
+        customMessage.setSuccess(true);
+        return  new ResponseEntity<>(customMessage,HttpStatus.OK);
+    }
+
+    @GetMapping("/{categoryId}/courses")
+    ResponseEntity<List<CourseDto>> getCoursesFromCategory(@PathVariable String categoryId){
+        return  new ResponseEntity<>(categoryService.getCoursesFromCategory(categoryId),HttpStatus.OK);
+    }
+
+
+
+
 
 }

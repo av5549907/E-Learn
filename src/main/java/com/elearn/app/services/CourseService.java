@@ -1,7 +1,9 @@
 package com.elearn.app.services;
 
 import com.elearn.app.dtos.CourseDto;
-import com.elearn.app.entities.Course;
+import com.elearn.app.dtos.CustomPageResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,13 +15,17 @@ public interface CourseService {
 
     CourseDto createCourse(CourseDto courseDto);
 
-    List<CourseDto> getAllCourses();
+    CustomPageResponse<CourseDto> getAllCourses(int pageNumber, int pageSize, String sortBy);
+
+    Page<CourseDto> getAllCourses(Pageable pageable);
     CourseDto updateCourse(CourseDto dto,String courseId);
     String deleteCourse(String courseID);
 
     CourseDto getCourse(String courseId);
 
-    List<CourseDto> searchByTitle(String searchTitleKeyword);
+    List<CourseDto> searchCourses(String searchTitleKeyword);
+
+    CourseDto updateCourseDetails(CourseDto courseDto,String courseId);
 
 
 }

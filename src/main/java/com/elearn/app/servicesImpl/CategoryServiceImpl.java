@@ -1,11 +1,15 @@
 package com.elearn.app.servicesImpl;
 
 import com.elearn.app.dtos.CategoryDto;
+import com.elearn.app.dtos.CourseDto;
 import com.elearn.app.dtos.CustomPageResponse;
 import com.elearn.app.entities.Category;
+import com.elearn.app.entities.Course;
 import com.elearn.app.exceptions.ResourceNotFoundException;
 import com.elearn.app.repositories.CategoryRepo;
+import com.elearn.app.repositories.CourseRepo;
 import com.elearn.app.services.CategoryService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,11 +27,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     CategoryRepo categoryRepo;
     ModelMapper modelMapper;
+    CourseRepo courseRepo;
 
-    public CategoryServiceImpl(CategoryRepo categoryRepo,ModelMapper modelMapper){
-        this.categoryRepo=categoryRepo;
-        this.modelMapper=modelMapper;
+    public CategoryServiceImpl(CategoryRepo categoryRepo, ModelMapper modelMapper, CourseRepo courseRepo) {
+        this.categoryRepo = categoryRepo;
+        this.modelMapper = modelMapper;
+        this.courseRepo = courseRepo;
     }
+
 
     @Override
     public String startCategory() {
@@ -91,4 +98,26 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepo.save(category);
         return modelMapper.map(category,CategoryDto.class);
     }
+
+    @Override
+    @Transactional
+    public void addCourseToCategory(String courseId, String categoryId) {
+        Category category=categoryRepo.findById(categoryId).orElseThrow(()->new ResourceNotFoundException("Category not found !!"));
+        Course course=courseRepo.findById(courseId).orElseThrow(()->new ResourceNotFoundException("Course not found !!"));
+        category.addCourse(course);
+        categoryRepo.save(category);
+        System.out.println("Course added in category");
+    }
+
+    @Override
+    @Transactional
+    public List<CourseDto> getCoursesFromCategory(String categoryId) {
+        Category category=categoryRepo.findById(categoryId).orElseThrow(()->new ResourceNotFoundException("Category not found !!"));
+        List<Course> courses=category.getCourses();
+        courses.stream().forEach(x-> System.out.println(x.getTitle()));
+        List<CourseDto> courseDtos=courses.stream().map(course->modelMapper.map(course,CourseDto.class)).collect(Collectors.toList());
+        return courseDtos;
+    }
+
+
 }
