@@ -18,16 +18,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/categories")
+@CrossOrigin("http://localhost:3000") //only cross-origin request from this URL will be allowed
 public class CategoryController {
     @Autowired
     CategoryService categoryService;
-
     @GetMapping("/start")
     ResponseEntity<String> startCategoryService(){
 
         return new ResponseEntity<>(categoryService.startCategory(), HttpStatus.OK);
     }
-
     @PostMapping
     ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto){
         return new  ResponseEntity<>(this.categoryService.createCategory(categoryDto),HttpStatus.CREATED);

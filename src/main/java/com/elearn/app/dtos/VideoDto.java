@@ -10,4 +10,8 @@ public class VideoDto {
     private  String contentType;
 
     private Course course;
+
+    public String getVideoUrl(){
+        return "http://localhost:8080/api/v1/videos/"+videoId+"/videos";
+    }
 }

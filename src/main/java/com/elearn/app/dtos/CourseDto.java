@@ -2,9 +2,8 @@ package com.elearn.app.dtos;
 
 import com.elearn.app.entities.Category;
 import com.elearn.app.entities.Video;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -25,9 +24,16 @@ public class CourseDto {
     private String longDesc;
     private double price;
     private  boolean live=false;
-    private double discount;
+    @JsonIgnore
+    private double discount;// to hide the discount in json when serialization(conversion of object in json) is going.
     private  String banner;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-mm-dd")//To chnage the Date format in response
     private Date createdDate;
+    private String bannerContentType;
     private List<Video> videoList=new ArrayList<>();
     private  List<Category> categoryList=new ArrayList<>();
+
+    public String getBannerUrl(){
+        return "http://localhost:8080/api/v1/courses/"+courseId+"/banners";
+    }
 }

@@ -15,13 +15,12 @@ import java.nio.file.StandardCopyOption;
 public class FileServiceImpl implements FileService {
     @Override
     public String save(MultipartFile file, String outputPath,String filename) throws IOException {
-
         Path path=Paths.get(outputPath);
         //create folder if not exist
         Files.createDirectories(path);
         Path filePath=Paths.get(path.toString(),file.getOriginalFilename());
         System.out.println(filePath);
         Files.copy(file.getInputStream(),filePath, StandardCopyOption.REPLACE_EXISTING);
-        return path.toString();
+        return filePath.toString();
     }
 }

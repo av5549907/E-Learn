@@ -23,6 +23,7 @@ public class Course {
     private double discount;
     private  String banner;
     private Date createdDate;
+    private String bannerContentType;
     @OneToMany(mappedBy = "course")
     private List<Video> videoList=new ArrayList<>();
     @ManyToMany(cascade = CascadeType.ALL)
