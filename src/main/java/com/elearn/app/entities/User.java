@@ -1,14 +1,17 @@
 package com.elearn.app.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
 
-import java.util.Date;
+import java.util.*;
 
 @Entity
 @Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name="users")
 public class User {
     @Id
     private  String Id;
@@ -26,4 +29,16 @@ public class User {
     private Date createAt;
     private  String recentOtp;
 
+    @ManyToMany(mappedBy = "users",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private Set<Role> roles=new HashSet<>();
+
+    public  void assignRole(Role role){
+        this.roles.add(role);
+        role.getUsers().add(this);
+    }
+
+    public void  removeRoles(Role role){
+        this.roles.remove(role);
+        role.getUsers().remove(this);
+    }
 }

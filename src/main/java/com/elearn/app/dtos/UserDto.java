@@ -1,7 +1,13 @@
 package com.elearn.app.dtos;
 
-import java.util.Date;
+import com.elearn.app.entities.Role;
+import lombok.Data;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+@Data
 public class UserDto {
     private  String Id;
     private  String name;
@@ -15,4 +21,5 @@ public class UserDto {
     private String profilePath;
     private Date createAt;
     private  String recentOtp;
+    private Set<Role> roles=new HashSet<>();
 }

@@ -14,7 +14,6 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity(debug = true)
 public class SecurityConfig {
 
 
@@ -47,7 +46,7 @@ public class SecurityConfig {
 //                e.requestMatchers(HttpMethod.GET,"/api/v1/categories","/api/v1/videos").permitAll().anyRequest().authenticated());
         httpSecurity.authorizeHttpRequests(auth->{
             auth.requestMatchers(HttpMethod.GET,"/api/v1/categories","/api/v1/videos","/client-login","/client-login-process","/success").permitAll()
-                    .requestMatchers(HttpMethod.GET,"/api/v1/courses").permitAll().anyRequest().authenticated();
+                    .requestMatchers(HttpMethod.GET,"/api/v1/courses","/api/v1/users/").permitAll().anyRequest().authenticated();
         });
 //        httpSecurity.formLogin(Customizer.withDefaults());
         httpSecurity.formLogin(form->{
@@ -63,7 +62,10 @@ public class SecurityConfig {
         httpSecurity.logout(logout->{
            logout.logoutUrl("/logout");
         });
+
+
         return  httpSecurity.build();
     }
+
 
 }

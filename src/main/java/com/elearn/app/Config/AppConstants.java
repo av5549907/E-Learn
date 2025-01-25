@@ -10,4 +10,8 @@ public class AppConstants {
 
     public static final String COURSE_BANNER_UPLOAD_DIR="uploads"+ File.separator+"courses"+File.separator+"banner";
     public static final String COURSE_VIDEO_UPLOAD_DIR="uploads"+ File.separator+"courses"+File.separator+"video";
+
+    public static final String ROLE_ADMIN="ROLE_ADMIN";
+    public static final String ROLE_GUEST="ROLE_GUEST";
+
 }
