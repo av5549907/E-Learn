@@ -45,8 +45,11 @@ public class SecurityConfig {
 //        httpSecurity.authorizeHttpRequests(e->
 //                e.requestMatchers(HttpMethod.GET,"/api/v1/categories","/api/v1/videos").permitAll().anyRequest().authenticated());
         httpSecurity.authorizeHttpRequests(auth->{
-            auth.requestMatchers(HttpMethod.GET,"/api/v1/categories","/api/v1/videos","/client-login","/client-login-process","/success").permitAll()
-                    .requestMatchers(HttpMethod.GET,"/api/v1/courses","/api/v1/users/").permitAll().anyRequest().authenticated();
+            auth.requestMatchers(HttpMethod.GET,"/api/v1/categories","/api/v1/videos").permitAll()
+                    .requestMatchers("/client-login","/client-login-process","/api/v1/courses","/api/v1/users").permitAll()
+                    .requestMatchers(HttpMethod.POST,"/api/v1/users/").permitAll()
+                    .anyRequest()
+                    .authenticated();
         });
 //        httpSecurity.formLogin(Customizer.withDefaults());
         httpSecurity.formLogin(form->{
@@ -58,10 +61,12 @@ public class SecurityConfig {
             form.loginProcessingUrl("/client-login-process");
             form.successForwardUrl("/success");
         });
-        httpSecurity.httpBasic(Customizer.withDefaults());
+
         httpSecurity.logout(logout->{
            logout.logoutUrl("/logout");
         });
+        httpSecurity.cors(Customizer.withDefaults());
+        httpSecurity.httpBasic(Customizer.withDefaults());
 
 
         return  httpSecurity.build();
