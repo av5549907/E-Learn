@@ -12,9 +12,11 @@ import com.elearn.app.repositories.RoleRepo;
 import com.elearn.app.repositories.UserRepo;
 import com.elearn.app.services.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -29,10 +31,13 @@ public class UserServiceImpl implements UserService {
     UserRepo userRepo;
 
     RoleRepo roleRepo;
-    public UserServiceImpl(ModelMapper modelMapper, UserRepo userRepo,RoleRepo roleRepo) {
+
+    PasswordEncoder passwordEncoder;
+    public UserServiceImpl(ModelMapper modelMapper, UserRepo userRepo,RoleRepo roleRepo,PasswordEncoder passwordEncoder) {
         this.modelMapper = modelMapper;
         this.userRepo = userRepo;
         this.roleRepo=roleRepo;
+        this.passwordEncoder=passwordEncoder;
     }
 
     @Override
@@ -43,7 +48,8 @@ public class UserServiceImpl implements UserService {
         user.setCreateAt(new Date());
         user.setEmailVerified(false);
         user.setSmsVerified(false);
-        user.setProfilePath("upload/default.jpg");
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setProfilePath(AppConstants.DEFAULT_USER_PROFILE_PATH);
         Role role=roleRepo.findByRoleName(AppConstants.ROLE_GUEST).orElseThrow(()->new ResourceNotFoundException("Role not found"));
         user.assignRole(role);
         User savedUser =userRepo.save(user);
