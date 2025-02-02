@@ -97,7 +97,7 @@ public class SecurityConfig {
 
         );
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.authorizeHttpRequests(auth -> auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+        httpSecurity.authorizeHttpRequests(auth -> auth.requestMatchers("/doc.html","/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                         .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "api/v1/**").hasRole(AppConstants.GUEST)
                         .requestMatchers(HttpMethod.POST, "api/v1/**").hasRole(AppConstants.ADMIN)
@@ -107,6 +107,7 @@ public class SecurityConfig {
                         .anyRequest()
                         .authenticated()
         );
+
 //        *************************************************************************************************
 //        session management, adding filter and exception handling
 //        **************************************************************************************************
@@ -125,6 +126,8 @@ public class SecurityConfig {
                 }))
 
         );
+
+
 //        httpSecurity.authorizeHttpRequests(auth ->
 //                auth
 ////                        requestMatchers(HttpMethod.GET, "/api/v1/**").hasAnyRole("GUEST", "ADMIN")
@@ -166,6 +169,7 @@ public class SecurityConfig {
 //        httpSecurity.logout(logout->{
 //           logout.logoutUrl("/logout");
 //        });
+
         httpSecurity.cors(Customizer.withDefaults());
         httpSecurity.httpBasic(ex -> ex.authenticationEntryPoint(authenticationEntryPoint));
 

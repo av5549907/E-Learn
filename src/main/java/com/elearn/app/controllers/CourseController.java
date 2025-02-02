@@ -7,6 +7,8 @@ import com.elearn.app.dtos.CustomPageResponse;
 import com.elearn.app.dtos.ResourceContentType;
 import com.elearn.app.services.CourseService;
 import com.elearn.app.services.FileService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +35,19 @@ public class CourseController {
     @Autowired
     CourseService courseService;
 
+    @Operation(summary = "Start The Course Service")
     @GetMapping("/start")
     public ResponseEntity<String> courseService() {
         String start = courseService.startService();
         return ResponseEntity.status(HttpStatus.OK).body(start);
     }
 
+    @Operation(summary = "Create the course",
+            description = "Pass the new course information to create a new course",
+            tags = {"course operation"}
+    )
+    @ApiResponse(responseCode = "201", description = "Course Created Success")
+    @ApiResponse(responseCode ="501", description = "Internal server error")
     @PostMapping
     public ResponseEntity<CourseDto> createCourse(@Valid @RequestBody CourseDto courseDto) {
         return new ResponseEntity<>(courseService.createCourse(courseDto), HttpStatus.OK);
@@ -74,6 +83,12 @@ public class CourseController {
         return new ResponseEntity<>(courseService.getAllCourses(pageable), HttpStatus.OK);
     }
 
+    @Operation(summary = "Update Course",
+    description = "Update the course for the given course id",
+            tags = {"course operation"}
+    )
+    @ApiResponse(responseCode = "201",description = "Course Update Success")
+    @ApiResponse(responseCode = "501",description = "Internal Server Error")
     @PutMapping("/{courseId}")
     ResponseEntity<CourseDto> updateCourseDetails(@Valid @RequestBody CourseDto courseDto, @PathVariable String courseId) {
         return new ResponseEntity<>(courseService.updateCourseDetails(courseDto, courseId), HttpStatus.OK);
