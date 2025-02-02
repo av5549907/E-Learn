@@ -28,32 +28,33 @@ public class VideoController {
     VideoService videoService;
 
     @PostMapping
-    ResponseEntity<VideoDto> createVideo(@RequestBody VideoDto videoDto){
-     return   new ResponseEntity<>(videoService.createVideo(videoDto), HttpStatus.CREATED);
+    ResponseEntity<VideoDto> createVideo(@RequestBody VideoDto videoDto) {
+        return new ResponseEntity<>(videoService.createVideo(videoDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{videoId}")
-    ResponseEntity<VideoDto> getVideo(@PathVariable String videoId){
-        return  new ResponseEntity<>(videoService.getVideo(videoId),HttpStatus.OK);
+    ResponseEntity<VideoDto> getVideo(@PathVariable String videoId) {
+        return new ResponseEntity<>(videoService.getVideo(videoId), HttpStatus.OK);
     }
 
     @GetMapping
-    ResponseEntity<Page<VideoDto>> getAllVideos(Pageable pageable){
-        return new ResponseEntity<>(videoService.getAllVideos(pageable),HttpStatus.OK);
+    ResponseEntity<Page<VideoDto>> getAllVideos(Pageable pageable) {
+        return new ResponseEntity<>(videoService.getAllVideos(pageable), HttpStatus.OK);
     }
 
-   @PutMapping("/{videoId}")
-    ResponseEntity<VideoDto> updateVideo(@RequestBody VideoDto videoDto,@PathVariable String videoId){
-        return  new ResponseEntity<>(videoService.updateVideo(videoDto,videoId),HttpStatus.OK);
+    @PutMapping("/{videoId}")
+    ResponseEntity<VideoDto> updateVideo(@RequestBody VideoDto videoDto, @PathVariable String videoId) {
+        return new ResponseEntity<>(videoService.updateVideo(videoDto, videoId), HttpStatus.OK);
     }
+
     @DeleteMapping("/videoId")
-    ResponseEntity<String> deleteVideo(@PathVariable String videoId){
-        return  new ResponseEntity<>(videoService.deleteVideo(videoId),HttpStatus.OK);
+    ResponseEntity<String> deleteVideo(@PathVariable String videoId) {
+        return new ResponseEntity<>(videoService.deleteVideo(videoId), HttpStatus.OK);
     }
 
     @GetMapping("/search")
-   ResponseEntity<List<VideoDto>> searchVideo(@RequestParam String keyWord){
-        return  new ResponseEntity<>(videoService.searchVideo(keyWord),HttpStatus.OK);
+    ResponseEntity<List<VideoDto>> searchVideo(@RequestParam String keyWord) {
+        return new ResponseEntity<>(videoService.searchVideo(keyWord), HttpStatus.OK);
     }
 
     @PostMapping("/{videoId}/videos")
@@ -61,9 +62,9 @@ public class VideoController {
             @PathVariable String videoId,
             @RequestParam("video") MultipartFile video
     ) throws IOException {
-        String contentType= video.getContentType();
-        if(contentType!=null || (!contentType.equalsIgnoreCase("video/mp4") || !contentType.equalsIgnoreCase("video/mov")|| !contentType.equalsIgnoreCase("video/AVI")|| !contentType.equalsIgnoreCase("video/mkv"))){
-            CustomMessage customMessage=new CustomMessage();
+        String contentType = video.getContentType();
+        if (contentType != null || (!contentType.equalsIgnoreCase("video/mp4") || !contentType.equalsIgnoreCase("video/mov") || !contentType.equalsIgnoreCase("video/AVI") || !contentType.equalsIgnoreCase("video/mkv"))) {
+            CustomMessage customMessage = new CustomMessage();
             customMessage.setMessage("Invalid file !!");
             customMessage.setSuccess(false);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(customMessage);
@@ -73,14 +74,14 @@ public class VideoController {
         System.out.println(video.getName());
         System.out.println(video.getSize());
 
-        return ResponseEntity.ok(videoService.saveVideo(video,videoId));
+        return ResponseEntity.ok(videoService.saveVideo(video, videoId));
     }
 
     @GetMapping("/{videoId}/videos")
     ResponseEntity<Resource> serveBanner(
             @PathVariable String videoId
-    ){
-        ResourceContentType resourceContentType=videoService.getVideoById(videoId);
-        return  ResponseEntity.ok().contentType(MediaType.parseMediaType(resourceContentType.getContentType())).body(resourceContentType.getResource());
+    ) {
+        ResourceContentType resourceContentType = videoService.getVideoById(videoId);
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(resourceContentType.getContentType())).body(resourceContentType.getResource());
     }
 }

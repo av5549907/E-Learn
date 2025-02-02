@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/categories")
-@CrossOrigin("http://localhost:3000") //only cross-origin request from this URL will be allowed
+//@CrossOrigin(origins="http://localhost:5173/") //only cross-origin request from this URL will be allowed
 public class CategoryController {
     @Autowired
     CategoryService categoryService;

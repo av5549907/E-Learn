@@ -34,21 +34,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-   public ResponseEntity<?> createToken(@RequestBody LoginRequest loginRequest){
-       try{
-           UsernamePasswordAuthenticationToken authenticationToken=new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword());
-         Authentication authenticatedUser= manager.authenticate(authenticationToken);
+    public ResponseEntity<?> createToken(@RequestBody LoginRequest loginRequest) {
+        try {
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
+            Authentication authenticatedUser = manager.authenticate(authenticationToken);
 
-       }catch (AuthenticationException ex){
-           throw new BadCredentialsException("Incorrect email or password");
-       }
+        } catch (AuthenticationException ex) {
+            throw new BadCredentialsException("Incorrect email or password");
+        }
 
-        CustomUserDetails userDetails=(CustomUserDetails)userDetailsService.loadUserByUsername(loginRequest.getEmail());
-        User user=userDetails.getUser();
-        String token=jwtUtil.generateToken(user.getEmail());
-        JwtApiResponse build=JwtApiResponse.builder().token(token).userDto(modelMapper.map(user, UserDto.class)).build();
-        return  ResponseEntity.ok(build);
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(loginRequest.getEmail());
+        User user = userDetails.getUser();
+        String token = jwtUtil.generateToken(user.getEmail());
+        JwtApiResponse build = JwtApiResponse.builder().token(token).userDto(modelMapper.map(user, UserDto.class)).build();
+        return ResponseEntity.ok(build);
 
-   }
+    }
 
 }

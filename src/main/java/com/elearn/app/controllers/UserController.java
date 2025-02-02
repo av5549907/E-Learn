@@ -20,13 +20,13 @@ public class UserController {
     UserService userService;
 
     @PostMapping
-    ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto){
-         return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.CREATED);
+    ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+        return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{userId}")
-    ResponseEntity<UserDto> updateUser(@RequestBody UserDto  userDto, @PathVariable String userId){
-        return  new ResponseEntity<>(userService.updateUser(userDto,userId),HttpStatus.OK);
+    ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable String userId) {
+        return new ResponseEntity<>(userService.updateUser(userDto, userId), HttpStatus.OK);
     }
 
 //    @GetMapping("/")
@@ -39,17 +39,17 @@ public class UserController {
 //    }
 
     @GetMapping
-     ResponseEntity<List<UserDto>> getAllUsers(){
-        return new ResponseEntity<>(userService.getAll(),HttpStatus.OK);
+    ResponseEntity<List<UserDto>> getAllUsers() {
+        return new ResponseEntity<>(userService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
-    ResponseEntity<UserDto> getUserById(@PathVariable String userId){
-        return  new ResponseEntity<>(userService.getUserById(userId),HttpStatus.OK);
+    ResponseEntity<UserDto> getUserById(@PathVariable String userId) {
+        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")
-    ResponseEntity<String> deleteUser(@PathVariable String userId){
-        return new ResponseEntity<>(userService.deleteUser(userId),HttpStatus.OK);
+    ResponseEntity<String> deleteUser(@PathVariable String userId) {
+        return new ResponseEntity<>(userService.deleteUser(userId), HttpStatus.OK);
     }
 }

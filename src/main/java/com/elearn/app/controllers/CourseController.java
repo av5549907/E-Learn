@@ -34,60 +34,60 @@ public class CourseController {
     CourseService courseService;
 
     @GetMapping("/start")
-    public ResponseEntity<String> courseService(){
-        String start=courseService.startService();
+    public ResponseEntity<String> courseService() {
+        String start = courseService.startService();
         return ResponseEntity.status(HttpStatus.OK).body(start);
     }
 
     @PostMapping
-    public ResponseEntity<CourseDto> createCourse(@Valid @RequestBody CourseDto courseDto){
-        return new ResponseEntity<>(courseService.createCourse(courseDto),HttpStatus.OK);
+    public ResponseEntity<CourseDto> createCourse(@Valid @RequestBody CourseDto courseDto) {
+        return new ResponseEntity<>(courseService.createCourse(courseDto), HttpStatus.OK);
     }
 
     @GetMapping("/{courseId}")
-    public ResponseEntity<CourseDto> getCourse(@PathVariable String courseId){
-        return new ResponseEntity<>(courseService.getCourse(courseId),HttpStatus.OK);
+    public ResponseEntity<CourseDto> getCourse(@PathVariable String courseId) {
+        return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<CourseDto>> searchCourses(@RequestParam String keyword){
-        return new ResponseEntity<>(courseService.searchCourses(keyword),HttpStatus.OK);
+    public ResponseEntity<List<CourseDto>> searchCourses(@RequestParam String keyword) {
+        return new ResponseEntity<>(courseService.searchCourses(keyword), HttpStatus.OK);
     }
 
     @DeleteMapping("/{courseId}")
-    ResponseEntity<String> deleteCourse(@PathVariable String courseId){
-        return new ResponseEntity<>(courseService.deleteCourse(courseId),HttpStatus.OK);
+    ResponseEntity<String> deleteCourse(@PathVariable String courseId) {
+        return new ResponseEntity<>(courseService.deleteCourse(courseId), HttpStatus.OK);
     }
 
     @GetMapping("/all")
     ResponseEntity<CustomPageResponse<CourseDto>> getAllCourses(
-            @RequestParam(value="pageNumber",required = false,defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int pageNumber,
-            @RequestParam(value="pageSize",required = false,defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize,
-            @RequestParam(value = "sortBy",required = false,defaultValue = AppConstants.SORT_BY) String sortBy
-    ){
-        return new ResponseEntity<>(courseService.getAllCourses(pageNumber,pageSize,sortBy),HttpStatus.OK);
+            @RequestParam(value = "pageNumber", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize,
+            @RequestParam(value = "sortBy", required = false, defaultValue = AppConstants.SORT_BY) String sortBy
+    ) {
+        return new ResponseEntity<>(courseService.getAllCourses(pageNumber, pageSize, sortBy), HttpStatus.OK);
     }
 
     @GetMapping
-    ResponseEntity<Page<CourseDto>> getAllCourses(Pageable pageable){
+    ResponseEntity<Page<CourseDto>> getAllCourses(Pageable pageable) {
 
-        return new ResponseEntity<>(courseService.getAllCourses(pageable),HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getAllCourses(pageable), HttpStatus.OK);
     }
 
     @PutMapping("/{courseId}")
-    ResponseEntity<CourseDto> updateCourseDetails(@Valid @RequestBody CourseDto courseDto,@PathVariable String courseId){
-        return new ResponseEntity<>(courseService.updateCourseDetails(courseDto,courseId),HttpStatus.OK);
+    ResponseEntity<CourseDto> updateCourseDetails(@Valid @RequestBody CourseDto courseDto, @PathVariable String courseId) {
+        return new ResponseEntity<>(courseService.updateCourseDetails(courseDto, courseId), HttpStatus.OK);
     }
 
 
     @PostMapping("/{courseId}/banners")
     ResponseEntity<?> uploadBanner(
             @PathVariable String courseId,
-            @RequestParam("banner")MultipartFile banner
+            @RequestParam("banner") MultipartFile banner
     ) throws IOException {
-        String bannerType= banner.getContentType();
-        if(bannerType!=null && (!bannerType.equalsIgnoreCase("image/png") || !bannerType.equalsIgnoreCase("image/jpeg"))){
-            CustomMessage customMessage=new CustomMessage();
+        String bannerType = banner.getContentType();
+        if (bannerType != null && (!bannerType.equalsIgnoreCase("image/png") || !bannerType.equalsIgnoreCase("image/jpeg"))) {
+            CustomMessage customMessage = new CustomMessage();
             customMessage.setMessage("Invalid file !!");
             customMessage.setSuccess(false);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(customMessage);
@@ -97,21 +97,21 @@ public class CourseController {
         System.out.println(banner.getName());
         System.out.println(banner.getSize());
 
-        return ResponseEntity.ok(courseService.saveBanner(banner,courseId));
+        return ResponseEntity.ok(courseService.saveBanner(banner, courseId));
     }
 
     @GetMapping("/{courseId}/banners")
     ResponseEntity<Resource> serveBanner(
             @PathVariable String courseId,
             HttpServletRequest request
-    ){
+    ) {
         System.out.println(request.getContextPath());
-        Enumeration<String> head=request.getHeaderNames();
-        while(head.hasMoreElements()){
-            String header=head.nextElement();
-            System.out.println(header+" : "+request.getHeader(header));
+        Enumeration<String> head = request.getHeaderNames();
+        while (head.hasMoreElements()) {
+            String header = head.nextElement();
+            System.out.println(header + " : " + request.getHeader(header));
         }
-      ResourceContentType resourceContentType=courseService.getCourseBannerById(courseId);
-      return  ResponseEntity.ok().contentType(MediaType.parseMediaType(resourceContentType.getContentType())).body(resourceContentType.getResource());
+        ResourceContentType resourceContentType = courseService.getCourseBannerById(courseId);
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(resourceContentType.getContentType())).body(resourceContentType.getResource());
     }
 }
